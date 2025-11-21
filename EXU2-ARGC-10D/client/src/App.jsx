@@ -1,6 +1,5 @@
-import { useState } from 'react'
 import { useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Asegúrate de instalar bootstrap
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   const [nums, setNums] = useState({ num1: '', num2: '' });
@@ -9,8 +8,21 @@ function App() {
   const handleSumar = async (e) => {
     e.preventDefault();
     try {
-      // Petición al puerto 8081 (Puerto de la PC para el backend)
-      const response = await fetch(`http://localhost:8081/api/calculate/sum?num1=${nums.num1}&num2=${nums.num2}`);
+      // Ahora hacemos un POST enviando un JSON
+      const response = await fetch('http://localhost:8081/api/calculate/sum', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          // Aseguramos que sean números
+          num1: parseFloat(nums.num1),
+          num2: parseFloat(nums.num2)
+        })
+      });
+
+      if (!response.ok) throw new Error('Error en la petición');
+
       const data = await response.json();
       setResult(data);
     } catch (error) {
@@ -33,7 +45,7 @@ function App() {
       <div className="container">
         <div className="card shadow-sm" style={{ maxWidth: '500px', margin: '0 auto' }}>
           <div className="card-header bg-light">
-            <h4 className="mb-0">Calculadora de Suma</h4>
+            <h4 className="mb-0">Calculadora de Suma (vía JSON)</h4>
           </div>
           <div className="card-body">
             <form onSubmit={handleSumar}>
