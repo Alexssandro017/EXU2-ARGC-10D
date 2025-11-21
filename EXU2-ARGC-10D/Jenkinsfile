@@ -1,0 +1,29 @@
+pipeline {
+    agent {
+        label 'master'
+    }
+
+    environment {
+        PROJECT_NAME = 'exu2-argc'
+    }
+
+    stages {
+        stage('Limpiar Entorno') {
+            steps {
+                bat "docker compose -p ${PROJECT_NAME} down || exit /b 0"
+            }
+        }
+
+        stage('Construir y Desplegar') {
+            steps {
+                bat "docker compose -p ${PROJECT_NAME} up --build -d"
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "Examen desplegado bajo el proyecto: ${PROJECT_NAME}"
+        }
+    }
+}

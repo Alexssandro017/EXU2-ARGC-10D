@@ -1,0 +1,25 @@
+services:
+  calculator:
+    image: calculator:v1.0.1       
+    build:
+      context: ./client
+      args:
+        API_URL: http://localhost:8081/api/calculate
+    container_name: exu2-calculadora
+    ports:
+      - "80:80"                   
+    networks:
+      - exu2-argc-net              
+  operations:
+    image: operations:v1.0.1       
+    build:
+      context: ./server
+    container_name: exu2-operaciones 
+    ports:
+      - "8081:8080"               
+    networks:
+      - exu2-argc-net
+
+networks:
+  exu2-argc-net:
+    name: exu2-argc-net           
